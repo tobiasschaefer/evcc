@@ -21,7 +21,7 @@ func CachedTokenSource(store store.Store, ts oauth2.TokenSource) oauth2.TokenSou
 
 func (ts *cachedTokenSource) Token() (*oauth2.Token, error) {
 	token, err := ts.ts.Token()
-	if err == nil && ts.store != nil {
+	if err == nil {
 		err = ts.store.Save(token)
 	}
 	return token, err
