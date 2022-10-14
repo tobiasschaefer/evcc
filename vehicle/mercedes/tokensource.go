@@ -37,7 +37,7 @@ func (ts *ReuseTokenSource) Token() (*oauth2.Token, error) {
 
 	valid := err == nil && token.Valid()
 	if valid && ts.store != nil {
-		ts.store.Save(token)
+		err = ts.store.Save(token)
 	}
 
 	// update status
@@ -46,13 +46,13 @@ func (ts *ReuseTokenSource) Token() (*oauth2.Token, error) {
 	return token, err
 }
 
-func (ts *ReuseTokenSource) Update(t *oauth2.Token) {
+func (ts *ReuseTokenSource) Update(token *oauth2.Token) {
 	if ts.store != nil {
-		ts.store.Save(t)
+		_ = ts.store.Save(token)
 	}
 
 	ts.mu.Lock()
-	ts.ts = ts.oc.TokenSource(context.Background(), t)
+	ts.ts = ts.oc.TokenSource(context.Background(), token)
 	ts.mu.Unlock()
 
 	// update status
